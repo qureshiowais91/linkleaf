@@ -64,7 +64,7 @@ const SignupScreen: React.FC = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Sign Up To LinkLeaf</Text>
+      <Text style={styles.title}>LinkLeaf</Text>
       <View style={styles.inputContainer}>
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Email</Text>
@@ -100,11 +100,12 @@ const SignupScreen: React.FC = ({ navigation }) => {
             autoCompleteType="password"
           />
         </View>
-        <TouchableOpacity onPress={navigateToLogin}>
+       
+      <ConfirmButton onPress={Signup} title={"Sign Up"}></ConfirmButton>
+      <TouchableOpacity onPress={navigateToLogin}>
           <Text style={styles.loginLink}>Already have an account? Log in</Text>
         </TouchableOpacity>
       </View>
-      <ConfirmButton onPress={Signup} title={"Sign Up"}></ConfirmButton>
     </SafeAreaView>
   );
 };
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff", // Inverted background color (white)
   },
   button: {
-    backgroundColor: "#007bff", // Example button color
+    backgroundColor: "#007b ff", // Example button color
     padding: 15,
     borderRadius: 10,
     alignItems: "center",

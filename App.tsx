@@ -1,13 +1,13 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import StackNavigator from "./src/navigation/StackNavigator";
+import AuthStackNavigator from "./src/navigation/AuthStackNavigator";
 
-function App() {
+const App = () => {
   return (
     <NavigationContainer>
-      <StackNavigator></StackNavigator>
+      <AuthStackNavigator />
     </NavigationContainer>
   );
-}
+};
 
 export default App;

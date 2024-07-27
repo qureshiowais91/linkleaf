@@ -54,12 +54,14 @@ const TreeSelectionScreen = ({ navigation }) => {
         ))}
       </View>
       <ConfirmButton
+        title="Continue"
         onPress={() => {
-          console.log('Selected Trees:', selectedTrees);
-          // Navigate to next screen or perform necessary actions
+          console.log("Selected Purposes:", selectedTrees);
+          // Navigate to TreeSelectionScreen
+          navigation.navigate("Tabs"); // Pass any necessary data
         }}
         style={styles.button}
-        title="Continue"
+
       />
     </View>
   );
