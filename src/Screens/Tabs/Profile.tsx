@@ -12,6 +12,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import useGoogleLogin from "../../store/store";
 import useUserProfile from "../../store/readProfile"; // Import the custom hook
 import { useFocusEffect } from "@react-navigation/native"; // Import useFocusEffect
+import Share from 'react-native-share'; // Import the react-native-share library
 
 const ProfileScreen = () => {
   const email = useGoogleLogin((state) => state.email);
@@ -30,6 +31,26 @@ const ProfileScreen = () => {
   const copyToClipboard = (text) => {
     Clipboard.setString(text);
     alert(`${text} copied to clipboard!`);
+  };
+
+  const shareProfile = async () => {
+    const profileInfo = `
+      Name: ${profile.name || "N/A"}
+      Company: ${profile.company || "N/A"}
+      Phone: ${profile.phone || "N/A"}
+      Email: ${email || "error@gmail.com"}
+    `;
+    
+    const shareOptions = {
+      title: 'Share Profile',
+      message: profileInfo, 
+    };
+
+    try {
+      await Share.open(shareOptions);
+    } catch (error) {
+      console.log('Error sharing:', error);
+    }
   };
 
   const renderCopyableText = (label, value, iconName) => {
@@ -55,7 +76,7 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <TouchableOpacity
-        onPress={() => alert("Share or Copy functionality")}
+        onPress={shareProfile}
         style={styles.shareIconContainer}
       >
         <Icon name="share" size={24} color="#000000" />
@@ -68,7 +89,7 @@ const ProfileScreen = () => {
           <View style={styles.divider} />
           {renderCopyableText("Phone:", profile.phone || "N/A", "phone")}
           <View style={styles.divider} />
-          {renderCopyableText("Email:", profile.email || email, "envelope")}
+          {renderCopyableText("Email:", email || "error@gmail.com", "envelope")}
         </View>
       </View>
     </SafeAreaView>

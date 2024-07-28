@@ -64,7 +64,7 @@ const SignupScreen: React.FC = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>LinkLeaf</Text>
+      <Text style={styles.title}>Lilyesthederm</Text>
       <View style={styles.inputContainer}>
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Email</Text>
