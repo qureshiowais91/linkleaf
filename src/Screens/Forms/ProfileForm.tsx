@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, Alert } from "react-native";
 import {
   TextInput,
   Button,
@@ -38,17 +38,22 @@ const ManageProfileScreen: React.FC = () => {
   const theme = useTheme(); // Access the current theme
 
   const handleSubmit = async () => {
-    try {
-      const profileData: ProfileData = {
-        name,
-        email,
-        phone,
-        address,
-        visitingHours,
-        bio,
-        company, // Added company field to profile data
-      };
+    if (!validateEmail(email)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
 
+    const profileData: ProfileData = {
+      name,
+      email,
+      phone,
+      address,
+      visitingHours,
+      bio,
+      company, // Added company field to profile data
+    };
+
+    try {
       await updateProfile(profileData, uid);
       setSnackbarMessage("Profile updated successfully!");
       setShowSnackbar(true);
@@ -59,32 +64,42 @@ const ManageProfileScreen: React.FC = () => {
     }
   };
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleTextInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (text: string) => {
+    const cleanedText = text.replace(/[^a-zA-Z0-9\s]/g, ""); // Remove special characters
+    setter(cleanedText);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TextInput
         label="Name"
         value={name}
-        onChangeText={setName}
+        onChangeText={handleTextInputChange(setName)}
         style={styles.input}
         underlineColor={theme.colors.primary} // Custom underline color
         mode="outlined" // Outlined style
         theme={{ colors: { text: theme.colors.text } }} // Text color
       />
-      {/* <TextInput
+      <TextInput
         label="Email"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={handleTextInputChange(setEmail)}
         style={styles.input}
         keyboardType="email-address"
         autoCapitalize="none"
         underlineColor={theme.colors.primary} // Custom underline color
         mode="outlined" // Outlined style
         theme={{ colors: { text: theme.colors.text } }} // Text color
-      /> */}
+      />
       <TextInput
         label="Phone Number"
         value={phone}
-        onChangeText={setPhone}
+        onChangeText={handleTextInputChange(setPhone)}
         style={styles.input}
         keyboardType="phone-pad"
         underlineColor={theme.colors.primary} // Custom underline color
@@ -94,7 +109,7 @@ const ManageProfileScreen: React.FC = () => {
       <TextInput
         label="Company Name"
         value={company}
-        onChangeText={setCompany}
+        onChangeText={handleTextInputChange(setCompany)}
         style={styles.input}
         underlineColor={theme.colors.primary} // Custom underline color
         mode="outlined" // Outlined style
@@ -103,7 +118,7 @@ const ManageProfileScreen: React.FC = () => {
       <TextInput
         label="Address"
         value={address}
-        onChangeText={setAddress}
+        onChangeText={handleTextInputChange(setAddress)}
         style={[styles.input, styles.multiline]} // Combine input styles
         multiline
         numberOfLines={2}
@@ -111,26 +126,6 @@ const ManageProfileScreen: React.FC = () => {
         mode="outlined" // Outlined style
         theme={{ colors: { text: theme.colors.text } }} // Text color
       />
-      {/* <TextInput
-        label="Visiting Hours"
-        value={visitingHours}
-        onChangeText={setVisitingHours}
-        style={styles.input}
-        underlineColor={theme.colors.primary} // Custom underline color
-        mode="outlined" // Outlined style
-        theme={{ colors: { text: theme.colors.text } }} // Text color
-      /> */}
-      {/* <TextInput
-        label="Bio"
-        value={bio}
-        onChangeText={setBio}
-        multiline
-        numberOfLines={4}
-        style={[styles.input, styles.multiline, { minHeight: 100 }]} // Adjust height for multiline input
-        underlineColor={theme.colors.primary} // Custom underline color
-        mode="outlined" // Outlined style
-        theme={{ colors: { text: theme.colors.text } }} // Text color
-      /> */}
       <Button
         mode="contained"
         onPress={handleSubmit}

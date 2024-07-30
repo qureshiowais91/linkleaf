@@ -83,11 +83,11 @@ const ProfileScreen = () => {
       </TouchableOpacity>
       <View style={styles.card}>
         <View style={styles.detailsContainer}>
-          {renderCopyableText("Name:", profile.name || "N/A", "user")}
+          {renderCopyableText("Name:", profile?.name || "N/A", "user")}
           <View style={styles.divider} />
-          {renderCopyableText("Company:", profile.company || "N/A", "building")}
+          {renderCopyableText("Company:", profile?.company || "N/A", "building")}
           <View style={styles.divider} />
-          {renderCopyableText("Phone:", profile.phone || "N/A", "phone")}
+          {renderCopyableText("Phone:", profile?.phone || "N/A", "phone")}
           <View style={styles.divider} />
           {renderCopyableText("Email:", email || "error@gmail.com", "envelope")}
         </View>
