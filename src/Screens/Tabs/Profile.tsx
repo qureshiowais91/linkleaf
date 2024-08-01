@@ -6,24 +6,23 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Clipboard,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import useGoogleLogin from "../../store/store";
-import useUserProfile from "../../store/readProfile"; // Import the custom hook
-import { useFocusEffect } from "@react-navigation/native"; // Import useFocusEffect
-import Share from 'react-native-share'; // Import the react-native-share library
+import useUserProfile from "../../store/readProfile";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Share from "react-native-share";
 
 const ProfileScreen = () => {
+  const navigation = useNavigation(); // Hook to get navigation object
   const email = useGoogleLogin((state) => state.email);
-  const userId = useGoogleLogin((state) => state.uid); // Get the userId from the store
-  
-  // Use the custom hook to get user profile data
+  const userId = useGoogleLogin((state) => state.uid);
+
   const { profile, loading, error, refetch } = useUserProfile(userId);
 
-  // Define a callback function to refetch data when the screen is focused
   const fetchProfileOnFocus = useCallback(() => {
-    refetch(); // Call refetch function from the custom hook
+    refetch();
   }, [refetch]);
 
   useFocusEffect(fetchProfileOnFocus);
@@ -40,16 +39,16 @@ const ProfileScreen = () => {
       Phone: ${profile.phone || "N/A"}
       Email: ${email || "error@gmail.com"}
     `;
-    
+
     const shareOptions = {
-      title: 'Share Profile',
-      message: profileInfo, 
+      title: "Share Profile",
+      message: profileInfo,
     };
 
     try {
       await Share.open(shareOptions);
     } catch (error) {
-      console.log('Error sharing:', error);
+      console.log("Error sharing:", error);
     }
   };
 
@@ -71,6 +70,12 @@ const ProfileScreen = () => {
 
   if (error) {
     return <Text>Error: {error.message}</Text>;
+  }
+
+  if (!email) {
+    // Profile data not found, navigate to login screen
+    navigation.navigate("LogIn"); // Replace "LogIn" with your actual login screen name
+    return null; // Return null or a loading indicator if needed while navigating
   }
 
   return (

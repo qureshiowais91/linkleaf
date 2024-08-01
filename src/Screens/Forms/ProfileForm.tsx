@@ -48,7 +48,7 @@ const ManageProfileScreen: React.FC = () => {
       setCompany(userData.company);
     } catch (error) {
       console.error("Error fetching profile data:", error);
-      Alert.alert("Error", "Failed to fetch profile data. Please try again.");
+      // Alert.alert("Error", "Failed to fetch profile data. Please try again.");
     }
   };
 

@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 
 function AuthStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="LogIn">
+    <Stack.Navigator initialRouteName="Tabs">
       <Stack.Screen
         name="Tabs"
         component={TabNavigator}
