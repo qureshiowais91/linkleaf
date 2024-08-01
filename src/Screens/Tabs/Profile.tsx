@@ -53,7 +53,7 @@ const ProfileScreen = () => {
     }
   };
 
-  const renderCopyableText = (label, value, iconName) => {
+  const renderCopyableText = (label, value) => {
     return (
       <TouchableOpacity
         onPress={() => copyToClipboard(value)}
@@ -81,16 +81,14 @@ const ProfileScreen = () => {
       >
         <Icon name="share" size={24} color="#000000" />
       </TouchableOpacity>
-      <View style={styles.card}>
-        <View style={styles.detailsContainer}>
-          {renderCopyableText("Name:", profile?.name || "N/A", "user")}
-          <View style={styles.divider} />
-          {renderCopyableText("Company:", profile?.company || "N/A", "building")}
-          <View style={styles.divider} />
-          {renderCopyableText("Phone:", profile?.phone || "N/A", "phone")}
-          <View style={styles.divider} />
-          {renderCopyableText("Email:", email || "error@gmail.com", "envelope")}
-        </View>
+      <View style={styles.container}>
+        {renderCopyableText("Name:", profile?.name || "N/A")}
+        <View style={styles.divider} />
+        {renderCopyableText("Company:", profile?.company || "N/A")}
+        <View style={styles.divider} />
+        {renderCopyableText("Phone:", profile?.phone || "N/A")}
+        <View style={styles.divider} />
+        {renderCopyableText("Email:", email || "error@gmail.com")}
       </View>
     </SafeAreaView>
   );
@@ -100,34 +98,30 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#f0f0f0",
-    justifyContent: "center",
-    alignItems: "center",
   },
   shareIconContainer: {
     position: "absolute",
-    top: 20,
-    right: 20,
+    top: 620,
+    right: 30,
     zIndex: 1,
   },
-  card: {
-    width: 300,
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 10,
+  container: {
+    marginTop: 30,
+    paddingHorizontal: 20,
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.15,
+    shadowRadius: 2.84,
     elevation: 5,
-  },
-  detailsContainer: {
-    marginTop: 10,
   },
   copyableTextContainer: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 15,
-    marginBottom: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   label: {
     fontSize: 16,
@@ -141,7 +135,6 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: "#ccc",
-    marginVertical: 5,
   },
 });
 

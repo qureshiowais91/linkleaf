@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ProfileScreen from "../Screens/Tabs/Profile";
 import SettingsScreen from "../Screens/Tabs/Settings";
 import ProfileForm from "../Screens/Forms/ProfileForm";
-import VisitingCardDesigner from "../Screens/VisitingCardDesigner/Designer";
+import SearchComponent from "../Components/Search";
 
 import { StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import the FontAwesome icon library
@@ -41,6 +41,8 @@ function TabNavigator() {
             iconName = "gear";
           } else if (route.name === "Edit Profile") {
             iconName = "user";
+          }  else if(route.name === "Search Friends"){
+            iconName ="search"
           }
 
           // Return the icon component
@@ -50,6 +52,7 @@ function TabNavigator() {
     >
       <Tab.Screen name="Home" component={ProfileScreen} />
       <Tab.Screen name="Edit Profile" component={ProfileForm} />
+      <Tab.Screen name="Search Friends" component={SearchComponent} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
 
     </Tab.Navigator>

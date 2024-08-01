@@ -38,7 +38,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Lilyesthederm</Text>
+      <Text style={styles.title}>Log in</Text>
       <View style={styles.inputContainer}>
         <View style={styles.inputWrapper}>
           <Text style={styles.label}>Email</Text>

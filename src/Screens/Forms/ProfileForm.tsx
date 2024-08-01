@@ -1,23 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, ScrollView, Alert } from "react-native";
-import {
-  TextInput,
-  Button,
-  Snackbar,
-  useTheme,
-} from "react-native-paper";
+import { TextInput, Button, Snackbar, useTheme } from "react-native-paper";
+import firestore from "@react-native-firebase/firestore"; // Import Firestore
 import useGoogleLogin from "../../store/store";
 import useProfileStore from "../../store/Profile";
 
 // Define the shape of the profile data
 interface ProfileData {
   name: string;
-  email: string;
   phone: string;
   address: string;
   visitingHours: string;
   bio: string;
-  company: string; // Added company field
+  company: string;
 }
 
 const ManageProfileScreen: React.FC = () => {
@@ -26,34 +21,54 @@ const ManageProfileScreen: React.FC = () => {
     updateProfile: state.updateProfile,
   }));
 
-  const [name, setName] = useState<string>("John Doe");
-  const [email, setEmail] = useState<string>("johndoe@example.com");
+  const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [visitingHours, setVisitingHours] = useState<string>("");
   const [bio, setBio] = useState<string>("");
-  const [company, setCompany] = useState<string>(""); // Added company state
+  const [company, setCompany] = useState<string>("");
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
-  const theme = useTheme(); // Access the current theme
+  const theme = useTheme();
+
+  useEffect(() => {
+    // Fetch existing profile data when component mounts
+    fetchProfileData();
+  }, []);
+
+  const fetchProfileData = async () => {
+    try {
+      const userDoc = await firestore().collection("users").doc(uid).get();
+      const userData = userDoc.data() as ProfileData;
+      setName(userData.name);
+      setPhone(userData.phone);
+      setAddress(userData.address);
+      setVisitingHours(userData.visitingHours);
+      setBio(userData.bio);
+      setCompany(userData.company);
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+      Alert.alert("Error", "Failed to fetch profile data. Please try again.");
+    }
+  };
 
   const handleSubmit = async () => {
-    if (!validateEmail(email)) {
-      Alert.alert("Invalid Email", "Please enter a valid email address.");
-      return;
-    }
-
-    const profileData: ProfileData = {
-      name,
-      email,
-      phone,
-      address,
-      visitingHours,
-      bio,
-      company, // Added company field to profile data
-    };
-
     try {
+      const phoneExists = await checkPhoneNumberExists(phone);
+      if (phoneExists) {
+        Alert.alert("Phone Number Exists", "This phone number is already in use. Please use a different one.");
+        return;
+      }
+
+      const profileData: ProfileData = {
+        name,
+        phone,
+        address,
+        visitingHours,
+        bio,
+        company,
+      };
+
       await updateProfile(profileData, uid);
       setSnackbarMessage("Profile updated successfully!");
       setShowSnackbar(true);
@@ -64,13 +79,13 @@ const ManageProfileScreen: React.FC = () => {
     }
   };
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const checkPhoneNumberExists = async (phoneNumber: string) => {
+    const querySnapshot = await firestore().collection("users").where("phone", "==", phoneNumber).get();
+    return !querySnapshot.empty;
   };
 
   const handleTextInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (text: string) => {
-    const cleanedText = text.replace(/[^a-zA-Z0-9\s]/g, ""); // Remove special characters
+    const cleanedText = text.replace(/[^a-zA-Z0-9\s]/g, "");
     setter(cleanedText);
   };
 
@@ -81,20 +96,9 @@ const ManageProfileScreen: React.FC = () => {
         value={name}
         onChangeText={handleTextInputChange(setName)}
         style={styles.input}
-        underlineColor={theme.colors.primary} // Custom underline color
-        mode="outlined" // Outlined style
-        theme={{ colors: { text: theme.colors.text } }} // Text color
-      />
-      <TextInput
-        label="Email"
-        value={email}
-        onChangeText={handleTextInputChange(setEmail)}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        underlineColor={theme.colors.primary} // Custom underline color
-        mode="outlined" // Outlined style
-        theme={{ colors: { text: theme.colors.text } }} // Text color
+        underlineColor={theme.colors.primary}
+        mode="outlined"
+        theme={{ colors: { text: theme.colors.text } }}
       />
       <TextInput
         label="Phone Number"
@@ -102,29 +106,29 @@ const ManageProfileScreen: React.FC = () => {
         onChangeText={handleTextInputChange(setPhone)}
         style={styles.input}
         keyboardType="phone-pad"
-        underlineColor={theme.colors.primary} // Custom underline color
-        mode="outlined" // Outlined style
-        theme={{ colors: { text: theme.colors.text } }} // Text color
+        underlineColor={theme.colors.primary}
+        mode="outlined"
+        theme={{ colors: { text: theme.colors.text } }}
       />
       <TextInput
         label="Company Name"
         value={company}
         onChangeText={handleTextInputChange(setCompany)}
         style={styles.input}
-        underlineColor={theme.colors.primary} // Custom underline color
-        mode="outlined" // Outlined style
-        theme={{ colors: { text: theme.colors.text } }} // Text color
+        underlineColor={theme.colors.primary}
+        mode="outlined"
+        theme={{ colors: { text: theme.colors.text } }}
       />
       <TextInput
         label="Address"
         value={address}
         onChangeText={handleTextInputChange(setAddress)}
-        style={[styles.input, styles.multiline]} // Combine input styles
+        style={[styles.input, styles.multiline]}
         multiline
         numberOfLines={2}
-        underlineColor={theme.colors.primary} // Custom underline color
-        mode="outlined" // Outlined style
-        theme={{ colors: { text: theme.colors.text } }} // Text color
+        underlineColor={theme.colors.primary}
+        mode="outlined"
+        theme={{ colors: { text: theme.colors.text } }}
       />
       <Button
         mode="contained"
@@ -148,7 +152,7 @@ const ManageProfileScreen: React.FC = () => {
             accent: theme.colors.primary,
             surface: theme.colors.surface,
           },
-        }} // Snackbar text color
+        }}
       >
         {snackbarMessage}
       </Snackbar>
@@ -160,31 +164,31 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 40,
-    backgroundColor: "#ffffff", // Background color
+    backgroundColor: "#ffffff",
   },
   input: {
     marginBottom: 20,
-    backgroundColor: "#ffffff", // Input background color
-    color: "#000000", // Text color
+    backgroundColor: "#ffffff",
+    color: "#000000",
   },
   multiline: {
-    minHeight: 60, // Adjust height for multiline input
+    minHeight: 60,
   },
   button: {
     marginTop: 20,
-    borderRadius: 30, // Rounded button
-    padding: 10, // Adjust button height
-    justifyContent: "center", // Center button text vertically
-    backgroundColor: "#006aff", // Button background color
+    borderRadius: 30,
+    padding: 10,
+    justifyContent: "center",
+    backgroundColor: "#006aff",
   },
   buttonLabel: {
-    fontSize: 20, // Adjust button text font size
-    color: "#ffffff", // Button text color
+    fontSize: 20,
+    color: "#ffffff",
   },
   snackbar: {
     marginBottom: 20,
-    borderRadius: 20, // Rounded snackbar
-    backgroundColor: "#006aff", // Snackbar background color
+    borderRadius: 20,
+    backgroundColor: "#006aff",
   },
 });
 
