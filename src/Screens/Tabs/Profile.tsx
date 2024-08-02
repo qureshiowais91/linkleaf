@@ -72,7 +72,7 @@ const ProfileScreen = () => {
     return <Text>Error: {error.message}</Text>;
   }
 
-  if (!email) {
+  if (!userId) {
     // Profile data not found, navigate to login screen
     navigation.navigate("LogIn"); // Replace "LogIn" with your actual login screen name
     return null; // Return null or a loading indicator if needed while navigating
